@@ -4,22 +4,45 @@ Python service scaffolding with zero learning curve.
 
 ## Installation
 
-### Using uvx (one-time execution)
+### Using uvx (recommended - no installation needed)
 ```bash
-uvx kraft create my-api
+uvx kraft
 ```
 
 ### Using uv tool (persistent installation)
 ```bash
-uv tool install kraft
+uv tool install kraft-cli
+kraft create my-api
+```
+
+### Using pipx (if you have it)
+```bash
+pipx install kraft-cli
 kraft create my-api
 ```
 
 ### Using pip (traditional installation)
+
+If you get "externally managed environment" error, try:
+
 ```bash
-pip install kraft
+# Option 1: Install to user directory
+pip3 install --user kraft-cli
+kraft create my-api
+
+# Option 2: Use pipx (install it first if needed)
+pip3 install --user pipx
+pipx install kraft-cli
+kraft create my-api
+
+# Option 3: Use a virtual environment
+python3 -m venv ~/kraft-env
+source ~/kraft-env/bin/activate
+pip3 install kraft-cli
 kraft create my-api
 ```
+
+**Note:** If you get "externally managed environment" error with pip, use `uvx` or `uv tool install` instead.
 
 ## Shell Completion (Optional)
 
