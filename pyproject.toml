@@ -1,5 +1,5 @@
 [project]
-name = "kraft"
+name = "kraft-cli"
 version = "0.1.0"
 description = "Python service scaffolding with zero learning curve"
 authors = [{name = "kraft", email = "kraft@example.com"}]
