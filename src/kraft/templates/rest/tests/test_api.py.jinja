@@ -1,0 +1,79 @@
+"""Tests for the API endpoints."""
+
+import pytest
+from fastapi.testclient import TestClient
+
+from {{ package_name }}.main import app
+
+
+@pytest.fixture
+def client() -> TestClient:
+    """Create a test client."""
+    return TestClient(app)
+
+
+class TestHealthCheck:
+    """Tests for health check endpoint."""
+
+    def test_health_check(self, client: TestClient) -> None:
+        response = client.get("/health")
+        assert response.status_code == 200
+        assert response.json() == {"status": "healthy"}
+
+
+class TestBooksAPI:
+    """Tests for books CRUD endpoints."""
+
+    def test_list_books_empty(self, client: TestClient) -> None:
+        response = client.get("/books")
+        assert response.status_code == 200
+        assert isinstance(response.json(), list)
+
+    def test_create_book(self, client: TestClient) -> None:
+        book_data = {"title": "Test Book", "author": "Test Author", "year": 2024}
+        response = client.post("/books", json=book_data)
+        assert response.status_code == 201
+        data = response.json()
+        assert data["title"] == "Test Book"
+        assert data["author"] == "Test Author"
+        assert "id" in data
+
+    def test_get_book(self, client: TestClient) -> None:
+        # Create a book first
+        book_data = {"title": "Get Test", "author": "Author"}
+        create_response = client.post("/books", json=book_data)
+        book_id = create_response.json()["id"]
+
+        # Get the book
+        response = client.get(f"/books/{book_id}")
+        assert response.status_code == 200
+        assert response.json()["title"] == "Get Test"
+
+    def test_get_book_not_found(self, client: TestClient) -> None:
+        response = client.get("/books/nonexistent-id")
+        assert response.status_code == 404
+
+    def test_update_book(self, client: TestClient) -> None:
+        # Create a book first
+        book_data = {"title": "Original", "author": "Author"}
+        create_response = client.post("/books", json=book_data)
+        book_id = create_response.json()["id"]
+
+        # Update the book
+        response = client.put(f"/books/{book_id}", json={"title": "Updated"})
+        assert response.status_code == 200
+        assert response.json()["title"] == "Updated"
+
+    def test_delete_book(self, client: TestClient) -> None:
+        # Create a book first
+        book_data = {"title": "To Delete", "author": "Author"}
+        create_response = client.post("/books", json=book_data)
+        book_id = create_response.json()["id"]
+
+        # Delete the book
+        response = client.delete(f"/books/{book_id}")
+        assert response.status_code == 204
+
+        # Verify it's gone
+        get_response = client.get(f"/books/{book_id}")
+        assert get_response.status_code == 404

@@ -1,0 +1,48 @@
+# REST Service Template Configuration
+name: rest
+description: FastAPI REST service with CRUD endpoints
+version: "1.0.0"
+
+variables:
+  project_name:
+    description: Name of the project
+    type: string
+    required: true
+    pattern: "^[a-zA-Z][a-zA-Z0-9_-]*$"
+  
+  package_name:
+    description: Python package name (derived from project_name)
+    type: string
+    default: "{{ project_name | replace('-', '_') | lower }}"
+  
+  port:
+    description: Port for the service
+    type: integer
+    default: 8000
+  
+  python_version:
+    description: Python version
+    type: string
+    default: "3.11"
+  
+  include_docker:
+    description: Include Docker configuration
+    type: boolean
+    default: true
+  
+  include_tests:
+    description: Include test files
+    type: boolean
+    default: true
+
+files:
+  - pyproject.toml.jinja
+  - src/{{ package_name }}/__init__.py
+  - src/{{ package_name }}/main.py.jinja
+  - src/{{ package_name }}/routes.py.jinja
+  - src/{{ package_name }}/models.py.jinja
+  - README.md.jinja
+  - .gitignore
+  - .kraft.yml.jinja
+  - LICENSE
+  - .env.example

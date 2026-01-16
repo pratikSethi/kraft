@@ -1,0 +1,109 @@
+# {{ project_name }}
+
+A FastAPI REST service generated with [kraft](https://pypi.org/project/kraft-cli/).
+
+## Quick Start
+
+```bash
+# Run with Docker
+docker-compose up --build
+
+# Or run locally
+uv sync --extra dev
+uv run uvicorn {{ package_name }}.main:app --reload --port {{ port }}
+```
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Health check |
+| GET | `/books` | List all books |
+| POST | `/books` | Create a book |
+| GET | `/books/{id}` | Get a book |
+| PUT | `/books/{id}` | Update a book |
+| DELETE | `/books/{id}` | Delete a book |
+
+## Testing the API
+
+### Create a book
+
+```bash
+curl -X POST http://localhost:{{ port }}/books \
+  -H "Content-Type: application/json" \
+  -d '{"title": "The Pragmatic Programmer", "author": "David Thomas", "year": 2019}'
+```
+
+### List all books
+
+```bash
+curl http://localhost:{{ port }}/books
+```
+
+### Get a book by ID
+
+```bash
+curl http://localhost:{{ port }}/books/{id}
+```
+
+### Update a book
+
+```bash
+curl -X PUT http://localhost:{{ port }}/books/{id} \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Updated Title"}'
+```
+
+### Delete a book
+
+```bash
+curl -X DELETE http://localhost:{{ port }}/books/{id}
+```
+
+## Development
+
+### Setup
+
+```bash
+uv sync --extra dev
+```
+
+### Run tests
+
+```bash
+uv run pytest
+```
+
+### Run linting
+
+```bash
+uv run ruff check .
+```
+
+### Run type checking
+
+```bash
+uv run mypy src/
+```
+
+## Project Structure
+
+```
+{{ project_name }}/
+├── src/
+│   └── {{ package_name }}/
+│       ├── __init__.py
+│       ├── main.py      # FastAPI app
+│       ├── routes.py    # API routes
+│       └── models.py    # Pydantic models
+├── tests/
+│   └── test_api.py
+├── Dockerfile
+├── docker-compose.yml
+├── pyproject.toml
+└── README.md
+```
+
+## License
+
+MIT

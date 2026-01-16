@@ -1,0 +1,28 @@
+"""Pydantic models for the API."""
+
+from pydantic import BaseModel, Field
+
+
+class BookCreate(BaseModel):
+    """Model for creating a book."""
+
+    title: str = Field(..., min_length=1, max_length=200)
+    author: str = Field(..., min_length=1, max_length=100)
+    year: int | None = Field(None, ge=1000, le=9999)
+
+
+class BookUpdate(BaseModel):
+    """Model for updating a book."""
+
+    title: str | None = Field(None, min_length=1, max_length=200)
+    author: str | None = Field(None, min_length=1, max_length=100)
+    year: int | None = Field(None, ge=1000, le=9999)
+
+
+class Book(BaseModel):
+    """Model for a book response."""
+
+    id: str
+    title: str
+    author: str
+    year: int | None = None
