@@ -70,8 +70,8 @@ wheels = [
 ]
 
 [[package]]
-name = "kraft"
-version = "0.1.0"
+name = "kraft-cli"
+version = "0.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "jinja2" },

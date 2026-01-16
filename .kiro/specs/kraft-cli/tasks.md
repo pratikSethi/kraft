@@ -20,8 +20,8 @@ This implementation plan breaks down the kraft CLI development into discrete, in
   - Test that CLI entry point is accessible
   - _Requirements: 5.1_
 
-- [ ] 2. Implement Rich console UI wrapper
-  - [ ] 2.1 Create ConsoleUI class with Rich integration
+- [x] 2. Implement Rich console UI wrapper
+  - [x] 2.1 Create ConsoleUI class with Rich integration
     - Implement success(), error(), info() methods with colored output
     - Implement progress() method for progress bars/spinners
     - Implement table() method for formatted table display
@@ -33,8 +33,8 @@ This implementation plan breaks down the kraft CLI development into discrete, in
     - Test table rendering
     - _Requirements: 6.1_
 
-- [ ] 3. Implement input validation
-  - [ ] 3.1 Create validators module
+- [x] 3. Implement input validation
+  - [x] 3.1 Create validators module
     - Implement validate_service_name() function
     - Reject names with spaces or special characters (except - and _)
     - Reject names starting with numbers
@@ -52,15 +52,15 @@ This implementation plan breaks down the kraft CLI development into discrete, in
     - Test empty string, very long names, unicode characters
     - _Requirements: 1.9_
 
-- [ ] 4. Create REST service template
-  - [ ] 4.1 Create templates/rest/ directory structure
+- [x] 4. Create REST service template
+  - [x] 4.1 Create templates/rest/ directory structure
     - Create template.yml with template configuration (not copier.yml)
     - Define variables: project_name, package_name, port, python_version
     - Add validation patterns for project_name
     - Set defaults: port=8000, python_version="3.11", include_docker=true
     - _Requirements: 1.2, 5.1_
 
-  - [ ] 4.2 Create FastAPI service template files
+  - [x] 4.2 Create FastAPI service template files
     - Create pyproject.toml.jinja with FastAPI dependencies
     - Create main.py.jinja with FastAPI app
     - Create routes.py.jinja with CRUD endpoints for books resource (GET /books, POST /books, GET /books/{id}, PUT /books/{id}, DELETE /books/{id})
@@ -69,13 +69,13 @@ This implementation plan breaks down the kraft CLI development into discrete, in
     - Create __init__.py files for package structure
     - _Requirements: 1.2, 1.8, 1.10_
 
-  - [ ] 4.3 Create Docker configuration templates
+  - [x] 4.3 Create Docker configuration templates
     - Create Dockerfile.jinja with multi-stage build using uv
     - Create docker-compose.yml.jinja with service definition
     - Add health checks to docker-compose.yml
     - _Requirements: 1.5, 9.1, 9.2, 9.4, 9.5_
 
-  - [ ] 4.4 Create README template
+  - [x] 4.4 Create README template
     - Create README.md.jinja with sections: Overview, Quick Start, Setup, Running, Testing, API Endpoints
     - Include curl commands for CRUD operations (GET /books, POST /books with JSON body, GET /books/{id}, PUT /books/{id}, DELETE /books/{id})
     - Use actual {{ port }} variable in all commands
@@ -83,21 +83,21 @@ This implementation plan breaks down the kraft CLI development into discrete, in
     - Add Quick Start section at top with minimal commands
     - _Requirements: 1.6, 7.1, 7.2, 7.5, 7.6, 7.9_
 
-  - [ ] 4.5 Create test template
+  - [x] 4.5 Create test template
     - Create test_api.py.jinja with pytest tests for books CRUD endpoints
     - Include tests for GET /books (list), POST /books (create), GET /books/{id} (retrieve), PUT /books/{id} (update), DELETE /books/{id} (delete)
     - Test successful responses, status codes, and error cases (404 for non-existent books)
     - _Requirements: 1.7_
 
-  - [ ] 4.6 Create supporting files
+  - [x] 4.6 Create supporting files
     - Create .gitignore with Python patterns
     - Create .kraft.yml.jinja for project metadata
     - Create LICENSE with MIT license text
     - Create .env.example with placeholder environment variables (empty for base template, populated by add-ons)
     - _Requirements: 5.4_
 
-- [ ] 5. Implement template rendering engine
-  - [ ] 5.1 Create TemplateRenderer class
+- [x] 5. Implement template rendering engine
+  - [x] 5.1 Create TemplateRenderer class
     - Implement render() method using Copier
     - Implement list_templates() to discover available templates
     - Implement get_template_info() to read template metadata
@@ -116,15 +116,15 @@ This implementation plan breaks down the kraft CLI development into discrete, in
     - Test get_template_info() returns correct metadata
     - _Requirements: 3.1, 3.3_
 
-- [ ] 6. Implement kraft create command
-  - [ ] 6.1 Create CLI command handler
+- [x] 6. Implement kraft create command
+  - [x] 6.1 Create CLI command handler
     - Implement create command with Typer
     - Add parameters: name (required), --type (default="rest"), --port, --with (multiple), --no-docker, --no-tests
     - Validate service name before generation
     - Default to REST when --type not specified
     - _Requirements: 1.1, 1.2_
 
-  - [ ] 6.2 Implement service generation logic
+  - [x] 6.2 Implement service generation logic
     - Call TemplateRenderer.render() with user inputs
     - Handle --with flags to apply add-ons during creation
     - Display progress with Rich progress bar
@@ -157,7 +157,7 @@ This implementation plan breaks down the kraft CLI development into discrete, in
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 8. Implement add-on system
-  - [ ] 8.1 Create postgres add-on
+  - [x] 8.1 Create postgres add-on
     - Create addons/postgres/ directory
     - Create addon.yml with metadata and dependencies
     - Create docker-services.yml with postgres container config
@@ -182,7 +182,7 @@ This implementation plan breaks down the kraft CLI development into discrete, in
     - Create readme-section.md.jinja with usage documentation
     - _Requirements: 2.6_
 
-  - [ ] 8.4 Create AddOnManager class
+  - [x] 8.4 Create AddOnManager class
     - Implement apply_addon() method
     - Update pyproject.toml with new dependencies
     - Update docker-compose.yml with new services
@@ -216,8 +216,8 @@ This implementation plan breaks down the kraft CLI development into discrete, in
     - Verify no files modified
     - _Requirements: 2.11_
 
-- [ ] 9. Implement kraft add command
-  - [ ] 9.1 Create CLI command handler
+- [x] 9. Implement kraft add command
+  - [x] 9.1 Create CLI command handler
     - Implement add command with Typer
     - Accept multiple add-on names as arguments
     - Validate current directory is a kraft project
@@ -232,8 +232,8 @@ This implementation plan breaks down the kraft CLI development into discrete, in
     - Verify all add-ons applied successfully
     - _Requirements: 2.7_
 
-- [ ] 10. Implement --with flag for create command
-  - [ ] 10.1 Update create command to handle --with flags
+- [x] 10. Implement --with flag for create command
+  - [x] 10.1 Update create command to handle --with flags
     - Parse --with flags into list of add-ons
     - After template rendering, apply each add-on
     - Display progress for each add-on
@@ -255,12 +255,12 @@ This implementation plan breaks down the kraft CLI development into discrete, in
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 12. Implement discovery commands
-  - [ ] 12.1 Implement kraft list command
+  - [x] 12.1 Implement kraft list command
     - Display table of available templates using Rich
     - Show template name, description, version
     - _Requirements: 3.1_
 
-  - [ ] 12.2 Implement kraft addons command
+  - [x] 12.2 Implement kraft addons command
     - Display table of available add-ons using Rich
     - Show add-on name, description, dependencies
     - _Requirements: 3.2_
