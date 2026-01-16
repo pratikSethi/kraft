@@ -2,47 +2,62 @@
 
 This project includes PostgreSQL database support with SQLAlchemy ORM.
 
-### Database Setup
+### Quick Start
 
-Start the database:
+1. Start postgres:
+   ```bash
+   docker-compose up -d postgres
+   ```
 
-```bash
-docker-compose up -d postgres
-```
+2. Switch to database-backed routes in `main.py`:
+   ```python
+   # Change this:
+   from {{ package_name }}.routes import router
+   # To this:
+   from {{ package_name }}.routes_db import router
+   ```
 
-### Environment Variables
+3. Create tables (add to `main.py` after app creation):
+   ```python
+   from {{ package_name }}.database import engine
+   from {{ package_name }}.models_db import Base
+
+   @app.on_event("startup")
+   async def create_tables():
+       async with engine.begin() as conn:
+           await conn.run_sync(Base.metadata.create_all)
+   ```
+
+4. Run the app:
+   ```bash
+   uv run uvicorn {{ package_name }}.main:app --reload
+   ```
+
+### Database Connection
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `DATABASE_URL` | `postgresql+asyncpg://postgres:postgres@localhost:5432/app` | Database connection URL |
-| `POSTGRES_USER` | `postgres` | PostgreSQL username |
-| `POSTGRES_PASSWORD` | `postgres` | PostgreSQL password |
+| `DATABASE_URL` | `postgresql+asyncpg://postgres:postgres@localhost:5432/app` | Connection URL |
+| `POSTGRES_USER` | `postgres` | Username |
+| `POSTGRES_PASSWORD` | `postgres` | Password |
 | `POSTGRES_DB` | `app` | Database name |
 
-### Usage
-
-```python
-from {{ package_name }}.database import get_db
-from {{ package_name }}.models_db import BookDB
-
-async def create_book(db: AsyncSession, title: str, author: str):
-    book = BookDB(id=str(uuid.uuid4()), title=title, author=author)
-    db.add(book)
-    await db.commit()
-    return book
-```
-
-### Migrations
-
-This project uses Alembic for database migrations:
+### Verify Data in Postgres
 
 ```bash
-# Create a new migration
+docker exec -it <project>-postgres-1 psql -U postgres -d app
+```
+
+```sql
+\dt                  -- list tables
+SELECT * FROM books; -- query books
+```
+
+### Migrations (Optional)
+
+For production, use Alembic instead of `create_all`:
+
+```bash
 alembic revision --autogenerate -m "description"
-
-# Apply migrations
 alembic upgrade head
-
-# Rollback one migration
-alembic downgrade -1
 ```
