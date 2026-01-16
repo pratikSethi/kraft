@@ -1,0 +1,48 @@
+## PostgreSQL Database
+
+This project includes PostgreSQL database support with SQLAlchemy ORM.
+
+### Database Setup
+
+Start the database:
+
+```bash
+docker-compose up -d postgres
+```
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DATABASE_URL` | `postgresql+asyncpg://postgres:postgres@localhost:5432/app` | Database connection URL |
+| `POSTGRES_USER` | `postgres` | PostgreSQL username |
+| `POSTGRES_PASSWORD` | `postgres` | PostgreSQL password |
+| `POSTGRES_DB` | `app` | Database name |
+
+### Usage
+
+```python
+from {{ package_name }}.database import get_db
+from {{ package_name }}.models_db import BookDB
+
+async def create_book(db: AsyncSession, title: str, author: str):
+    book = BookDB(id=str(uuid.uuid4()), title=title, author=author)
+    db.add(book)
+    await db.commit()
+    return book
+```
+
+### Migrations
+
+This project uses Alembic for database migrations:
+
+```bash
+# Create a new migration
+alembic revision --autogenerate -m "description"
+
+# Apply migrations
+alembic upgrade head
+
+# Rollback one migration
+alembic downgrade -1
+```

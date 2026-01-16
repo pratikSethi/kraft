@@ -80,6 +80,15 @@ def create(
             renderer.render(service_type, target_dir, variables)
             progress.update(task, completed=True)
 
+        # Apply add-ons if specified
+        if with_addons:
+            from kraft.addon_manager import AddOnManager
+
+            manager = AddOnManager()
+            for addon_name in with_addons:
+                ui.info(f"Applying add-on '{addon_name}'...")
+                manager.apply_addon(addon_name, target_dir)
+
         ui.success(f"Created service '{name}' at {target_dir}")
         ui.print("")
         ui.print("[bold]Next steps:[/bold]")
@@ -110,6 +119,70 @@ def list_templates() -> None:
         ["Name", "Description", "Version"],
         [[t["name"], t["description"], t["version"]] for t in templates],
     )
+
+
+@app.command()
+def addons() -> None:
+    """List available add-ons."""
+    from kraft.addon_manager import AddOnManager
+
+    manager = AddOnManager()
+    addon_list = manager.list_addons()
+
+    if not addon_list:
+        ui.info("No add-ons available")
+        return
+
+    ui.table(
+        "Available Add-ons",
+        ["Name", "Description", "Dependencies"],
+        [[a["name"], a["description"], ", ".join(a["dependencies"][:2])] for a in addon_list],
+    )
+
+
+@app.command()
+def add(
+    addon_names: Annotated[list[str], typer.Argument(help="Add-on(s) to apply")],
+    project_dir: Annotated[
+        Path | None, typer.Option("--dir", "-d", help="Project directory")
+    ] = None,
+) -> None:
+    """Add one or more add-ons to an existing kraft project."""
+    from kraft.addon_manager import AddOnManager
+
+    target_dir = project_dir or Path.cwd()
+
+    # Validate project
+    if not (target_dir / ".kraft.yml").exists():
+        ui.error(f"'{target_dir}' is not a kraft project (missing .kraft.yml)")
+        ui.info("Run 'kraft create' first to create a project")
+        raise typer.Exit(1)
+
+    manager = AddOnManager()
+
+    for addon_name in addon_names:
+        # Check if add-on exists
+        addon_info = manager.get_addon_info(addon_name)
+        if not addon_info:
+            ui.error(f"Unknown add-on: {addon_name}")
+            available = [a["name"] for a in manager.list_addons()]
+            if available:
+                ui.info(f"Available add-ons: {', '.join(available)}")
+            raise typer.Exit(1)
+
+        ui.info(f"Applying add-on '{addon_name}'...")
+
+        try:
+            manager.apply_addon(addon_name, target_dir)
+            ui.success(f"Applied add-on '{addon_name}'")
+        except Exception as e:
+            ui.error(f"Failed to apply add-on: {e}")
+            raise typer.Exit(1) from None
+
+    ui.print("")
+    ui.print("[bold]Next steps:[/bold]")
+    ui.print("  uv sync  # Install new dependencies")
+    ui.print("  docker-compose up -d  # Start services")
 
 
 def main() -> None:
