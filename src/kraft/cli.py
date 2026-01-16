@@ -89,14 +89,15 @@ def create(
                 ui.info(f"Applying add-on '{addon_name}'...")
                 manager.apply_addon(addon_name, target_dir)
 
-        ui.success(f"Created service '{name}' at {target_dir}")
+        ui.success(f"Created service '{name}' at {target_dir.resolve()}")
         ui.print("")
         ui.print("[bold]Next steps:[/bold]")
-        ui.print(f"  cd {name}")
+        ui.print(f"  cd {target_dir.resolve()}")
         ui.print("  uv sync --extra dev")
         ui.print(f"  uv run uvicorn {name.replace('-', '_')}.main:app --reload")
         ui.print("")
         ui.print("Or with Docker:")
+        ui.print(f"  cd {target_dir.resolve()}")
         ui.print("  docker-compose up --build")
 
     except Exception as e:

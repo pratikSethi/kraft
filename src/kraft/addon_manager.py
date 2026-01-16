@@ -91,22 +91,33 @@ class AddOnManager:
             return
 
         content = pyproject_path.read_text()
+        lines = content.split("\n")
+        new_lines = []
+        in_dependencies = False
+        deps_added = False
 
-        # Find the dependencies section and add new deps
-        for dep in dependencies:
-            if dep not in content:
-                # Find the closing bracket of dependencies
-                import re
+        for line in lines:
+            # Detect start of dependencies section
+            if line.strip().startswith("dependencies") and "=" in line and "[" in line:
+                in_dependencies = True
+                new_lines.append(line)
+                continue
 
-                pattern = r'(dependencies\s*=\s*\[[\s\S]*?)(])'
-                match = re.search(pattern, content)
-                if match:
-                    deps_section = match.group(1)
-                    # Add the new dependency before the closing bracket
-                    new_deps = deps_section.rstrip() + f'\n    "{dep}",\n'
-                    content = content[:match.start()] + new_deps + "]" + content[match.end():]
+            # If we're in dependencies and hit the closing bracket
+            if in_dependencies and line.strip().startswith("]"):
+                # Add new dependencies before closing bracket
+                if not deps_added:
+                    for dep in dependencies:
+                        if dep not in content:
+                            new_lines.append(f'    "{dep}",')
+                    deps_added = True
+                in_dependencies = False
+                new_lines.append(line)
+                continue
 
-        pyproject_path.write_text(content)
+            new_lines.append(line)
+
+        pyproject_path.write_text("\n".join(new_lines))
 
     def _update_docker_compose(
         self, project_dir: Path, services: dict, volumes: dict
