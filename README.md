@@ -44,6 +44,37 @@ kraft create my-api
 
 **Note:** If you get "externally managed environment" error with pip, use `uvx` or `uv tool install` instead.
 
+## Usage
+
+### Create a REST service
+
+```bash
+kraft create my-api
+cd my-api
+docker-compose up --build
+```
+
+Your API is now running at http://localhost:8000/books
+
+### Add PostgreSQL database
+
+```bash
+kraft add postgres
+```
+
+### Create with add-ons in one command
+
+```bash
+kraft create my-api --with postgres
+```
+
+### List available templates and add-ons
+
+```bash
+kraft list      # Show templates
+kraft addons    # Show add-ons
+```
+
 ## Shell Completion (Optional)
 
 ```bash
