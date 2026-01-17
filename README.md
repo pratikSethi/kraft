@@ -49,7 +49,15 @@ kraft create my-api
 ### Create a REST service
 
 ```bash
+# Using uvx (no install needed)
+uvx kraft-cli create my-api
+
+# Or if you installed with uv tool/pipx
 kraft create my-api
+```
+
+Then run it:
+```bash
 cd my-api
 docker-compose up --build
 ```
@@ -60,6 +68,7 @@ Your API is now running at http://localhost:8000/books
 
 ```bash
 kraft add postgres
+# or: uvx kraft-cli add postgres
 ```
 
 ### Create with add-ons in one command
