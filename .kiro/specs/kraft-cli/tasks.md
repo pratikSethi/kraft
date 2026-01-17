@@ -155,6 +155,11 @@ This implementation plan breaks down the kraft CLI development into discrete, in
   - Verify README has correct curl commands for CRUD operations
   - Test CRUD endpoints work (create book, list books, get book, update book, delete book)
   - Ensure all tests pass, ask the user if questions arise.
+  - **TODO**: Add local integration tests that verify:
+    - Service scaffolds correctly without add-ons
+    - Service scaffolds correctly with postgres add-on
+    - Generated service starts and responds to requests
+    - Docker build succeeds
 
 - [ ] 8. Implement add-on system
   - [x] 8.1 Create postgres add-on
