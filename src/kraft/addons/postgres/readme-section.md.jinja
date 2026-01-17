@@ -44,20 +44,17 @@ This project includes PostgreSQL database support with SQLAlchemy ORM.
 
 ### Verify Data in Postgres
 
+If you have `psql` installed locally:
 ```bash
-docker exec -it <project>-postgres-1 psql -U postgres -d app
+psql -h localhost -U postgres -d app
+```
+
+Or exec into the container:
+```bash
+docker exec -it {{ package_name.replace('_', '-') }}-postgres-1 psql -U postgres -d app
 ```
 
 ```sql
 \dt                  -- list tables
 SELECT * FROM books; -- query books
-```
-
-### Migrations (Optional)
-
-For production, use Alembic instead of `create_all`:
-
-```bash
-alembic revision --autogenerate -m "description"
-alembic upgrade head
 ```
