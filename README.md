@@ -46,20 +46,11 @@ kraft create my-api
 
 ## Shell Completion (Optional)
 
-kraft supports shell completion for bash, zsh, and fish. To enable it:
-
 ```bash
-# For bash
-kraft --install-completion bash
-
-# For zsh
 kraft --install-completion zsh
-
-# For fish
-kraft --install-completion fish
 ```
 
-After installation, restart your shell or reload your config. You'll then be able to use Tab to autocomplete commands and options.
+Restart your shell to enable Tab completion for commands and options.
 
 ## Development
 
