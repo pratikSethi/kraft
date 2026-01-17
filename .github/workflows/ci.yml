@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --extra dev
+
+      - name: Run linting
+        run: uv run ruff check src/
+
+      - name: Run type checking
+        run: uv run mypy src/
+
+      - name: Run unit tests
+        run: uv run pytest -v
+
+  integration:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --extra dev
+
+      - name: Test kraft create
+        run: |
+          uv run kraft create test-api --output /tmp/test-api
+          test -f /tmp/test-api/pyproject.toml
+          test -f /tmp/test-api/src/test_api/main.py
+          test -f /tmp/test-api/Dockerfile
+
+      - name: Test kraft create with postgres
+        run: |
+          uv run kraft create test-db --output /tmp/test-db --with postgres
+          test -f /tmp/test-db/src/test_db/database.py
+          test -f /tmp/test-db/src/test_db/routes_db.py
+
+      - name: Test Docker build
+        run: |
+          cd /tmp/test-api
+          docker build -t test-api .
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: integration
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Build package
+        run: uv build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
