@@ -9,6 +9,7 @@ from kraft.renderer import TemplateRenderer
 from kraft.ui import ui
 from kraft.validators import validate_service_name
 
+
 def version_callback(value: bool) -> None:
     """Print version and exit."""
     if value:
@@ -199,7 +200,12 @@ def add(
 def main(
     version: Annotated[
         bool | None,
-        typer.Option("--version", "-V", callback=version_callback, is_eager=True, help="Show version and exit"),
+        typer.Option(
+            "--version", "-V",
+            callback=version_callback,
+            is_eager=True,
+            help="Show version and exit",
+        ),
     ] = None,
 ) -> None:
     """Python service scaffolding with zero learning curve."""
