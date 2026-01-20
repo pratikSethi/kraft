@@ -9,6 +9,15 @@ from kraft.renderer import TemplateRenderer
 from kraft.ui import ui
 from kraft.validators import validate_service_name
 
+def version_callback(value: bool) -> None:
+    """Print version and exit."""
+    if value:
+        from kraft import __version__
+
+        typer.echo(f"kraft {__version__}")
+        raise typer.Exit()
+
+
 app = typer.Typer(
     name="kraft",
     help="Python service scaffolding with zero learning curve",
@@ -186,8 +195,19 @@ def add(
     ui.print("  docker-compose up -d  # Start services")
 
 
-def main() -> None:
-    """Main entry point for the CLI."""
+@app.callback()
+def main(
+    version: Annotated[
+        bool | None,
+        typer.Option("--version", "-V", callback=version_callback, is_eager=True, help="Show version and exit"),
+    ] = None,
+) -> None:
+    """Python service scaffolding with zero learning curve."""
+    pass
+
+
+def cli() -> None:
+    """CLI entry point."""
     app()
 
 
